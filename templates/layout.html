@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="static/custom.css">
+    <title>You Compare</title>
+  </head>
+  <body>
+    <nav class="navbar text-white navbar-expand-lg bg-info ">
+        <a class="navbar-brand"><h1>Comparador de videos de YouTube</h1></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </nav>
+    <div class="container">
+      <p></p>
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="card">
+            <div class="card-body">
+              <div>
+
+                <h5 class="card-title">Comparar Canales</h5>
+                <p class="card-text">Por favor ingresa los nombres de los canales que quieres comparar:</p>
+
+                <form class="" action="/select_channels">
+                    <p><input type="text" name="channel_id_1" required></p>
+                    <p><input type="text" name="channel_id_2" required></p>
+                  <p><input type="text" name="channel_id_3"></p>
+                  <button name="button" class="btn btn-primary">Buscar canales </button>
+                </form>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="card">
+            <div class="card-body">
+              <div class="test">
+
+                <h5 class="card-title">Analizar Comentarios de Videos</h5>
+                <p class="card-text">Por favor ingresa el video que quieres analizar</p>
+
+                <form class="" action="/select_video">
+                  <p><input type="text" name="query"></p>
+                  <button class="btn btn-primary">Buscar video</button>
+                </form>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% block content %}{% endblock %}
+
+    </div>
+  </body>
+</html>

@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+{% block content %}
+
+  <p><h2 class="card-title">Analizar comentarios de videos</h2></p>
+  <p></p>
+  <p><h5 class="card-title">Buscar resultados para "{{ query }}"</h5></p>
+  <p></p>
+
+  {% for item in query_result['items'] %}
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="card">
+          <div class="card-body">
+            <div>
+              <p><a href="https://www.youtube.com/watch?v={{ item['id']['videoId'] }}">
+                  <img src={{ item['snippet']['thumbnails']['medium']['url'] }} alt=""></a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="card">
+          <div class="card-body">
+            <div class="test">
+              <h5 class="card-title">Video: {{ item['snippet']['title'] }}</h5>
+              <p class="card-text">
+                <p>Canal: {{ item['snippet']['channelTitle'] }}</p>
+                <p>Comentarios: {{ item['statistics']['commentCount'] }}</p>
+                <p>Likes: {{ item['statistics']['likeCount'] }}</p>
+                <p>Dislikes: {{ item['statistics']['dislikeCount'] }}</p>
+              </p>
+              <form class="" action="">
+                <a href="/video_comments?video_id={{ item['id']['videoId'] }}">
+                  <button type="button" class="btn btn-primary">Ver el análisis de comentarios</button>
+                </a>
+              </form>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p></p>
+  {% endfor %}
+
+{% endblock content %}
