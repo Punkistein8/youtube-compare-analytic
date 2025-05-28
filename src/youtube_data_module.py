@@ -549,7 +549,7 @@ def comments_to_df(all_comments):
     return comment_df
 
 def analyze_comment_sentiments(comment_df):
-    '''Analyse sentiment. Take as input a comment dataframe from "comments_to_df()"'''
+    '''Analiza los comentarios y devuelve un dataframe con los resultados de la analisis de sentimientos.'''
     analyzer = SentimentIntensityAnalyzer()
 
     sentiment = {
@@ -584,7 +584,7 @@ def get_channel_video_df(youtube, channel_ids):
             # Write data to a dict
             video_data_dict = snippets_to_dict(video_snippet_list, yt_credentials=youtube)
 
-            # Insert data into a dataframe
+            # Inserta la data y la normaliza dentro de un dataframe
             video_df = pd.DataFrame(video_data_dict)
 
         else:

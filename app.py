@@ -12,7 +12,8 @@ logger.addHandler(handler)
 logger.setLevel(logging.INFO)
 
 # API_KEY = os.getenv('YOUTUBE_API_KEY')
-API_KEY = "AIzaSyCR6BEEh5S3OPChro6KjJBsQ30qVETd7GE"
+# API_KEY = "AIzaSyCR6BEEh5S3OPChro6KjJBsQ30qVETd7GE"
+API_KEY = "AIzaSyBmRKUAfBUn66IA-sQDbXf50hWQvuheCfs"
 
 app = Flask(__name__)
 
@@ -57,7 +58,7 @@ def video_comments():
     image_names.append(viz.lineplot_cumsum_video_comments(comment_sentiment2, video_id))
     image_names.append(viz.lineplot_cumsum_video_comments_pos_neg(comment_sentiment2, pos_sent, neg_sent, video_id))
     image_names.append(viz.scatterplot_sentiment_likecount(comment_sentiment2, pos_sent, neg_sent, video_id))
-    # Ensure 'like_count' and sentiment columns are numeric
+    # Asegurando que la columna 'like_count' sea numérica
     comment_sentiment2['like_count'] = pd.to_numeric(comment_sentiment2['like_count'], errors='coerce')
     
     # Check the actual sentiment column names in the DataFrame
@@ -66,10 +67,10 @@ def video_comments():
     for col in actual_sentiment_columns:
         comment_sentiment2[col] = pd.to_numeric(comment_sentiment2[col], errors='coerce')
 
-    # Drop rows with NaN values in 'like_count' or sentiment columns
+    # Borrando filas con valores NaN en 'like_count' y las columnas de sentimiento
     comment_sentiment2 = comment_sentiment2.dropna(subset=['like_count'] + actual_sentiment_columns)
 
-    # Calculate correlation
+    # Calcular la correlación entre 'like_count' y las columnas de sentimiento
     try:
         like_count_sentiment_corr = round(comment_sentiment2.corr().loc['like_count'][actual_sentiment_columns[0]], 2)
     except KeyError as e:
@@ -87,7 +88,6 @@ def video_comments():
 
 @app.route('/select_channels', methods=['GET', 'POST'])
 def select_channels():
-    '''This page return search results for the channel queries a user inputs and hits the 'Search Channels' button'''
     result_dictionary = request.args
     channel_names = []
 
@@ -95,12 +95,42 @@ def select_channels():
         if len(result_dictionary.get(channel_name)) > 0:
             channel_names.append(result_dictionary[channel_name])
 
-    youtube = ydt.youtubeAPIkey(API_KEY)
-    query_results = {}
-
-    for cn in channel_names:
-        result = ydt.youtubeSearchList(youtube, channel_id=None, q=cn, maxResults=5, type='channel')
-        query_results[cn] =  result
+    # Si está en modo desarrollo, usar datos simulados
+    if os.environ.get("FLASK_ENV") == "development":
+        query_results = {
+            "Canal 1": {
+                "items": [
+                    {
+                        "snippet": {
+                            "channelId": "UC123",
+                            "title": "Canal de Prueba 1",
+                            "thumbnails": {
+                                "medium": {"url": "https://placehold.co/400"}
+                            }
+                        }
+                    }
+                ]
+            },
+            "Canal 2": {
+                "items": [
+                    {
+                        "snippet": {
+                            "channelId": "UC456",
+                            "title": "Canal de Prueba 2",
+                            "thumbnails": {
+                                "medium": {"url": "https://placehold.co/400"}
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    else:
+        youtube = ydt.youtubeAPIkey(API_KEY)
+        query_results = {}
+        for cn in channel_names:
+            result = ydt.youtubeSearchList(youtube, channel_id=None, q=cn, maxResults=5, type='channel')
+            query_results[cn] =  result
 
     return render_template(
         'select_channels.html',

@@ -1,56 +1,69 @@
 {% extends "layout.html" %}
 {% block content %}
-  <p><h2 class="card-title">Por favor selecciona los canales que deseas analizars:</h2></p>
-  <p></p>
+<h2 class="card-title">Por favor selecciona los canales que deseas analizar:</h2>
 
-  <form class="" action="/channels">
-  <p></p>
-
-    {% for query in query_results %}
-      <p><h5 class="card-title">Selecciona un canal para los resultados de "{{ query }}"</h5></p>
-        <fieldset>
-
-          {% for item in query_results[query]['items'] %}
-            <div class="row">
-              <div class="col-sm-6">
-                <div class="card">
-                  <div class="card-body">
-                    <div>
-                      <p>
-                        <img src="{{ item['snippet']['thumbnails']['medium']['url'] }}" alt="">
-                      </p>
-                    </div>
-                  </div>
+<form action="/channels">
+  <div class="container">
+    <div class="row">
+      {% for query in query_results %}
+      <!-- si los canales son mayores que 2, accede a len()-->
+      {% if query_results|length > 2 %}
+        <div class="col-md-4">
+      {% else %}
+        <div class="col-md-6">
+      {% endif %}
+          <h5 class="card-title">Resultados para: "{{ query }}"</h5>
+          <fieldset>
+            {% for item in query_results[query]['items'] %}
+            <input class="form-check-input d-none" type="radio" name="{{ query }}"
+              id="radio_{{ item['snippet']['channelId'] }}" value="{{ item['snippet']['channelId'] }}">
+            <label class="card card-body selectable-card mb-3" for="radio_{{ item['snippet']['channelId'] }}">
+              <div class="d-flex align-items-center">
+                <img src="{{ item['snippet']['thumbnails']['medium']['url'] }}" class="img-thumbnail me-3"
+                  style="max-width: 100px;" alt="">
+                <div>
+                  <h6 class="card-title mb-0 ml-3">{{ item['snippet']['title'] }}</h6>
                 </div>
               </div>
-              <div class="col-sm-6">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="test">
+            </label>
+            {% endfor %}
+          </fieldset>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
 
-                      <h5 class="card-title">Canal: {{ item['snippet']['title'] }}</h5>
-                      <p class="card-text"></p>
-                      <p>
-                        <input
-                          type="radio"
-                          name="{{ query }}"
-                          id="{{ item['snippet']['channelId'] }}"
-                          value="{{ item['snippet']['channelId'] }}">
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <p></p>
-          {% endfor %}
-
-        </fieldset>
-      <hr>
-    {% endfor %}
-
-    <p><input type="submit" class="btn btn-primary" value="Comparar canales!"></p>
-
-  </form>
-
+    <div class="mt-4">
+      <input type="submit" class="btn btn-primary" value="Comparar canales!">
+    </div>
+</form>
 {% endblock content %}
+
+{% block styles %}
+<style>
+  /* Oculta los radios */
+  .form-check-input {
+    /* display: none; */
+  }
+
+  /* Estilo base de las tarjetas */
+  .selectable-card {
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
+  }
+
+  /* Hover para feedback */
+  .selectable-card:hover {
+    border-color: #0d6efd66;
+  }
+
+  /* ✅ Tarjeta seleccionada */
+  .form-check-input:checked+.selectable-card {
+    border-color: #0d6efd;
+    background-color: #1a6ee2;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+    color: white;
+  }
+</style>
+{% endblock styles %}

@@ -19,6 +19,7 @@ def barplot_channel_video_count(df_all, channel_ids):
     image_name = f'static/images/{channel_ids_string}_barplot_channel_video_count.png'
 
     plt.figure(figsize=(FIG_W, FIG_H))
+    # Agrupar los videos por canal y contar la cantidad de videos
     df_all.groupby('channel_title').size().sort_values(ascending=False).plot.bar()
     plt.xticks(rotation=ROT)
     plt.xlabel("Nombre del Canal")
@@ -33,7 +34,7 @@ def histogram_video_duration_count(df_all, channel_ids):
 
     df_all['duration_min'] = df_all['duration_sec'].astype('int') / 60
 
-    # Calculate outlier and clean them
+    # Calcular el outlier (datos atipicos) y limpiar los datos
     outlier = (df_all['duration_min'].describe()['75%'] - df_all['duration_min'].describe()['25%']) * 1.5 + df_all['duration_min'].describe()['75%']
     df_all = df_all[df_all['duration_min'] <= outlier]
 
@@ -155,13 +156,13 @@ def create_wordcloud(text, stopwords=STOPWORDS,video_id=None, channel_title=None
     return image_name
 
 def split_sentiment_pos_neg(comment_sentiment):
-    '''Split dataframe into positive, neutral and negative dataframes. Used for plotting.'''
+    '''Divide los comentarios en positivos y negativos. Retorna un dataframe con todos los comentarios y dos dataframes con los comentarios positivos y negativos.'''
 
     comment_sentiment.sort_values(by='published_at', inplace=True)
     comment_sentiment['count'] = 1
     comment_sentiment['cumsum'] = comment_sentiment['count'].cumsum()
 
-    # Select negative and poitive comments
+    # Seleccionar los comentarios positivos y negativos
     neg_sent = comment_sentiment[comment_sentiment['compound'] < -0.5]
     neg_sent['count'] = 1
     neg_sent['cumsum'] = neg_sent['count'].cumsum()
