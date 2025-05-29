@@ -139,7 +139,7 @@ def select_channels():
 
 @app.route('/channels', methods=['GET', 'POST'])
 def channels():
-    '''This page returns the channel coparison analysis when a user selects at least one channel with a radio button and hits "Compare channels now"'''
+    '''Esta página retorna el análisis de comparación de canales cuando el usuario selecciona al menos un canal y presiona "Comparar canales ahora"'''
     result_dictionary = request.args
 
     channel_ids = []
@@ -147,33 +147,68 @@ def channels():
         if len(result_dictionary[c_id]) == 24:
             channel_ids.append(result_dictionary[c_id])
 
-    youtube = ydt.youtubeAPIkey(API_KEY)
-    video_df = ydt.get_channel_video_df(youtube, channel_ids)
+    channel_thumbnails = []
 
-    image_names = []
-    image_names.append(viz.barplot_channel_video_count(video_df, channel_ids))
-    image_names.append(viz.barplot_links(video_df, channel_ids))
+    # Si está en modo desarrollo, cargar imágenes y tabla de ejemplo
+    if os.environ.get("FLASK_ENV") == "development":
+        # Puedes personalizar estos nombres de imagen según los archivos que tengas en static/images
+        image_names = [
+            'static/images/UC4FHiPgS1KXkUMx3dxBUtPg_UCxPD7bsocoAMq8Dj18kmGyQ_barplot_channel_video_count.png',
+            'static/images/UC4FHiPgS1KXkUMx3dxBUtPg_UCxPD7bsocoAMq8Dj18kmGyQ_barplot_links.png',
+            'static/images/UCxPD7bsocoAMq8Dj18kmGyQ_histogram_video_duration_count.png',
+            'static/images/UCxPD7bsocoAMq8Dj18kmGyQ_wordcloud.png',
+            'static/images/UC4FHiPgS1KXkUMx3dxBUtPg_histogram_video_duration_count.png',
+            'static/images/UC4FHiPgS1KXkUMx3dxBUtPg_wordcloud.png',
+        ]
+        # Tabla de ejemplo
+        import pandas as pd
+        df_table = pd.DataFrame({
+            'Posición': [1, 2],
+            'Nombre del Canal': ['Canal de Prueba 1', 'Canal de Prueba 2'],
+            'Título del video': ['Video 1', 'Video 2'],
+            'Número de vistas': [10000, 8000]
+        })
+        tables = [df_table.to_html(index=False, classes='table-striped')]
+        channel_titles = ['Canal de Prueba 1', 'Canal de Prueba 2']
+        # Thumbnails de ejemplo
+        channel_thumbnails = ["https://placehold.co/120x120", "https://placehold.co/120x120"]
+    else:
+        youtube = ydt.youtubeAPIkey(API_KEY)
+        video_df = ydt.get_channel_video_df(youtube, channel_ids)
 
-    channel_titles = []
-    for channel_id in channel_ids:
-        channel_video_df = video_df[video_df['channel_id'] == channel_id]
-        channel_title = channel_video_df['channel_title'].unique()[0]
-        channel_titles.append(channel_title)
-        image_names.append(viz.histogram_video_duration_count_single(channel_video_df, channel_id, channel_title=channel_title))
-        channel_video_series = channel_video_df['tags']
-        wordcloud_string = ydt.concat_listelements(channel_video_series)
-        image_names.append(viz.create_wordcloud(wordcloud_string, stopwords=None, video_id=channel_id, channel_title=channel_title))
+        image_names = []
+        image_names.append(viz.barplot_channel_video_count(video_df, channel_ids))
+        image_names.append(viz.barplot_links(video_df, channel_ids))
 
-    df_table = viz.top_videos(video_df, metric='view', n=5)
+        channel_titles = []
+        channel_thumbnails = []
+        for channel_id in channel_ids:
+            channel_video_df = video_df[video_df['channel_id'] == channel_id]
+            channel_title = channel_video_df['channel_title'].unique()[0]
+            channel_titles.append(channel_title)
+            # Obtener thumbnail real del canal
+            try:
+                channel_info = youtube.channels().list(part="snippet", id=channel_id).execute()
+                thumb_url = channel_info['items'][0]['snippet']['thumbnails']['medium']['url']
+            except Exception:
+                thumb_url = "https://placehold.co/120x120"
+            channel_thumbnails.append(thumb_url)
+            image_names.append(viz.histogram_video_duration_count_single(channel_video_df, channel_id, channel_title=channel_title))
+            channel_video_series = channel_video_df['tags']
+            wordcloud_string = ydt.concat_listelements(channel_video_series)
+            image_names.append(viz.create_wordcloud(wordcloud_string, stopwords=None, video_id=channel_id, channel_title=channel_title))
+
+        df_table = viz.top_videos(video_df, metric='view', n=5)
+        tables = [df_table.to_html(index=False, classes='table-striped')]
 
     return render_template(
         'channels.html',
         result_dictionary=result_dictionary,
-        video_df=video_df,
         image_names=image_names,
         channel_ids=channel_ids,
         channel_titles=channel_titles,
-        tables=[df_table.to_html(index=False, classes='table-striped')],
+        channel_thumbnails=channel_thumbnails,
+        tables=tables,
     )
 
 if __name__ == '__main__':

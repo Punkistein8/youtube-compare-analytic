@@ -1,14 +1,59 @@
 {% extends "layout.html" %}
 {% block content %}
-
-    {% for image_name in image_names %}
-      <p><img src='{{ image_name }}' alt=""></p>
-      <hr>
+<!-- Container más ancho -->
+<style>
+  .canal-border {
+    border-right: 2px solid #ccc;
+  }
+</style>
+<div class="container-fluid text-center w-100" style="max-width: 1600px; margin: auto;">
+  <h1 class="mt-5">Análisis de Canales de YouTube</h1>
+  <!-- Plots generales fuera de las columnas -->
+  {% set general_plots = [] %}
+  {% set canal_plots = [] %}
+  {% for image_name in image_names %}
+    {% if 'barplot_channel_video_count' in image_name or 'barplot_links' in image_name %}
+      {% set _ = general_plots.append(image_name) %}
+    {% else %}
+      {% set _ = canal_plots.append(image_name) %}
+    {% endif %}
+  {% endfor %}
+  <div class="row">
+    {% for image_name in general_plots %}
+      <div class="col-12 mb-3">
+        <img src="/{{ image_name }}" class="img-fluid img-thumbnail w-75" alt="">
+      </div>
     {% endfor %}
-
-    {% for table in tables %}
-      <p><h2 class="card-title">Top 5 Videos más vistos por Canal</h2></p>
-      <p>{{ table|safe }}</p>
+  </div>
+  <hr>
+  <h1 class="card-title my-5">Canales de YouTube</h1>
+  <div class="row">
+    {% for col in range(channel_titles|length) %}
+      <div class="col-md-6 d-flex flex-column align-items-center canal-col {% if not loop.last %}canal-border{% endif %}">
+        <!-- Foto del canal: modo desarrollo y modo producción -->
+        {% if channel_thumbnails and channel_thumbnails|length > col and channel_thumbnails[col] %}
+          <img src="{{ channel_thumbnails[col] }}" class="rounded-circle mb-3" style="width:120px; height:120px; object-fit:cover; border:3px solid #007bff;">
+        {% elif channel_titles[col] == 'Canal de Prueba 1' or channel_titles[col] == 'Canal de Prueba 2' %}
+          <img src="https://placehold.co/120x120" class="rounded-circle mb-3" style="width:120px; height:120px; object-fit:cover; border:3px solid #007bff;">
+        {% endif %}
+        <h4 class="text-center"><small class="text-muted small"> Canal #{{ col+1 }}: <br></small> {{ channel_titles[col] }}</h4>
+        {% set prefix = channel_ids[col] %}
+        {% set plot_count = 0 %}
+        {% for image_name in canal_plots %}
+          {% if image_name.startswith('static/images/' ~ prefix) %}
+            {% set plot_count = plot_count + 1 %}
+            <div class="mb-3"><img src="/{{ image_name }}" class="img-thumbnail w-100" alt=""></div>
+          {% endif %}
+        {% endfor %}
+        <!-- Elimina el espacio extra al final -->
+        <div style="flex-grow:1;"></div>
+      </div>
     {% endfor %}
-
+  </div>
+  <hr class="mt-0 mb-4">
+  {% for table in tables %}
+    <p><h2 class="card-title">Top 5 Videos más vistos por Canal</h2></p>
+    <p>{{ table|safe }}</p>
+  {% endfor %}
+</div>
 {% endblock content %}

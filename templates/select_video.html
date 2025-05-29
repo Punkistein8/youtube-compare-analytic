@@ -29,10 +29,9 @@
                 <p>Likes: {{ item['statistics']['likeCount'] }}</p>
                 <p>Dislikes: {{ item['statistics']['dislikeCount'] }}</p>
               </p>
-              <form class="" action="">
-                <a href="/video_comments?video_id={{ item['id']['videoId'] }}">
-                  <button type="button" class="btn btn-primary">Ver el análisis de comentarios</button>
-                </a>
+              <form class="ver-analisis-form" action="/video_comments" method="get">
+                <input type="hidden" name="video_id" value="{{ item['id']['videoId'] }}">
+                <button type="submit" class="btn btn-primary">Ver el análisis de comentarios</button>
               </form>
 
             </div>
