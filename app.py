@@ -201,10 +201,7 @@ def channels():
         df_table = viz.top_videos(video_df, metric='view', n=5)
         tables = [df_table.to_html(index=False, classes='table-striped')]
 
-    # --- Análisis textual con ChatGPT ---
-    # Pega tu API KEY de OpenAI aquí:
-    # OPENAI_API_KEY = os.getenv('OPENAI_API_KEY') or "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" #MIA
-    OPENAI_API_KEY = os.getenv('OPENAI_API_KEY') or "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"  #PROJECT
+    
     analysis_text = None
     try:
         import openai
