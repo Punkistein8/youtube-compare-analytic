@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Tema visual personalizado -->
+    <link rel="stylesheet" href="/static/custom_theme.css">
     <link rel="stylesheet" href="static/custom.css">
     <title>You Compare</title>
     
@@ -23,7 +27,7 @@
       }
       .loader-spinner {
         border: 8px solid #f3f3f3;
-        border-top: 8px solid #3498db;
+        border-top: 8px solid #eebbc3;
         border-radius: 50%;
         width: 60px;
         height: 60px;
@@ -36,15 +40,28 @@
       }
       .loader-text {
         font-size: 1.2em;
-        color: #333;
+        color: #232946;
         font-weight: bold;
       }
     </style>
     <script src="/static/loader.js"></script>
   </head>
   <body>
-    <nav class="navbar text-white navbar-expand-lg bg-info ">
-        <a class="navbar-brand"><h1>Comparador de videos de YouTube</h1></a>
+    <nav class="navbar text-white navbar-expand-lg">
+        <a class="navbar-brand" href="/">
+          <span class="logo-svg" aria-label="Logo" title="You Compare">
+            <!-- SVG Logo personalizado -->
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="24" cy="24" r="24" fill="#eebbc3"/>
+              <rect x="13" y="16" width="22" height="16" rx="4" fill="#232946"/>
+              <polygon points="22,20 30,24 22,28" fill="#eebbc3"/>
+            </svg>
+          </span>
+          <div class="d-flex flex-column">
+            <span style="font-size:1.7em; font-weight:700; color:#fff; letter-spacing:1px;">You Compare</span>
+            <small style="font-size:14px" class="slogan small">Comparador de videos de YouTube ✨</small>
+          </div>
+        </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>

@@ -1,0 +1,130 @@
+/* custom_theme.css - Estilos modernos para You Compare */
+body {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+  font-family: 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+  color: #222;
+}
+
+.navbar {
+  background: #232946 !important;
+  box-shadow: 0 2px 8px rgba(35,41,70,0.08);
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-svg {
+  width: 48px;
+  height: 48px;
+  vertical-align: middle;
+}
+
+.slogan {
+  font-size: 1.2em;
+  color: #eebbc3;
+  font-weight: 500;
+  margin-top: -8px;
+  letter-spacing: 1px;
+}
+
+.card {
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(35,41,70,0.07);
+  border: none;
+  background: #fff;
+  transition: transform 0.12s;
+}
+.card:hover {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 8px 32px rgba(35,41,70,0.13);
+}
+
+.btn-primary {
+  background: #232946;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: background 0.2s;
+}
+.btn-primary:hover {
+  background: #121629;
+}
+
+input[type="text"] {
+  border-radius: 8px;
+  border: 1.5px solid #eebbc3;
+  padding: 8px 12px;
+  font-size: 1em;
+  margin-bottom: 8px;
+  background: #f5f7fa;
+  transition: border 0.2s;
+}
+input[type="text"]:focus {
+  border: 1.5px solid #232946;
+  outline: none;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  background: #eebbc3;
+}
+::-webkit-scrollbar-thumb {
+  background: #232946;
+  border-radius: 8px;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+  font-weight: 700;
+  color: #232946;
+}
+
+/* Loader overlay mejora */
+#loader-overlay {
+  background: rgba(35,41,70,0.12);
+}
+.loader-spinner {
+  border-top: 8px solid #eebbc3;
+}
+.loader-text {
+  color: #232946;
+}
+
+/* Fondo con formas sutiles */
+body::before {
+  content: '';
+  position: fixed;
+  top: -120px; left: -120px;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, #eebbc3 0%, transparent 70%);
+  opacity: 0.18;
+  z-index: 0;
+}
+body::after {
+  content: '';
+  position: fixed;
+  bottom: -120px; right: -120px;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, #232946 0%, transparent 70%);
+  opacity: 0.10;
+  z-index: 0;
+}
+
+.container, .container-fluid {
+  position: relative;
+  z-index: 1;
+}
+
+.card-title {
+  color: #232946;
+}
+
+.card-text {
+  color: #393e46;
+}
+

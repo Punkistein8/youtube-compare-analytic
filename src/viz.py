@@ -5,6 +5,7 @@ from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
 from src import sql
 import numpy as np
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+from openai import OpenAI
 
 # Plot configurations
 FIG_W = 10 # Width of plots
@@ -180,9 +181,9 @@ def lineplot_cumsum_video_comments(comment_sentiment, video_id):
     plt.figure(figsize=(FIG_W, FIG_H))
     plt.plot(comment_sentiment['published_at'], comment_sentiment['cumsum'])
     plt.xticks(rotation=ROT)
-    plt.title('Cumulative sum of comments over time', fontdict = {'fontsize' : TS})
-    plt.xlabel('Date')
-    plt.ylabel('Sum of comments')
+    plt.title('Suma acumulada de comentarios a lo largo del tiempo', fontdict = {'fontsize' : TS})
+    plt.xlabel('Fecha')
+    plt.ylabel('Suma de Comentarios')
     plt.grid(True)
     plt.savefig(image_name, dpi=100)
 
@@ -197,9 +198,9 @@ def lineplot_cumsum_video_comments_pos_neg(comment_sentiment, pos_sent, neg_sent
     plt.plot('published_at', 'cumsum', data=pos_sent, marker='', color='green', linewidth=1, linestyle='-', label="Positive Sentiment")
     plt.plot('published_at', 'cumsum', data=neg_sent, marker='', color='red', linewidth=1, linestyle='-', label="Negative Sentiment")
     plt.legend()
-    plt.title('Cumulative sum of comments over time', fontdict = {'fontsize' : TS})
-    plt.xlabel('Date')
-    plt.ylabel('Sum of comments')
+    plt.title('Suma acumulada de comentarios a lo largo del tiempo', fontdict = {'fontsize' : TS})
+    plt.xlabel('Fecha')
+    plt.ylabel('Suma de Comentarios')
     plt.xticks(rotation=ROT)
     plt.grid(True)
     plt.savefig(image_name, dpi=100)
@@ -216,9 +217,9 @@ def scatterplot_sentiment_likecount(comment_sentiment, pos_sent, neg_sent, video
     plt.scatter(pos_sent['compound'], np.log1p(pos_sent['like_count']), color='green', label='Positive Sentiment')
     plt.scatter(neg_sent['compound'], np.log1p(neg_sent['like_count']), color='red', label='Negative Sentiment')
     plt.xticks(rotation=ROT)
-    plt.title('Sentiment / Like count', fontdict = {'fontsize' : TS})
-    plt.xlabel('Sentiment')
-    plt.ylabel('Logarithm of Like count')
+    plt.title('Sentimientos / Contador de Likes', fontdict = {'fontsize' : TS})
+    plt.xlabel('Sentimientos')
+    plt.ylabel('Logaritmo del recuento de me gusta')
     plt.legend()
     plt.grid(True)
     fig.savefig(image_name, dpi=100)
@@ -237,3 +238,33 @@ def top_videos(video_df, metric='view', n=5):
     df_table.reset_index(inplace=True)
 
     return df_table
+
+def get_channel_analysis_text(video_df, channel_titles, channel_ids, api_key):
+    """
+    Genera un análisis textual usando la API de ChatGPT en base a los datos de los canales y videos.
+    """
+    # Resumimos los datos principales para el prompt
+    resumen = ""
+    for channel_id, channel_title in zip(channel_ids, channel_titles):
+        df_channel = video_df[video_df['channel_id'] == channel_id]
+        total_videos = len(df_channel)
+        total_views = int(df_channel['view_count'].sum())
+        avg_views = int(df_channel['view_count'].mean()) if total_videos > 0 else 0
+        avg_likes = int(df_channel['like_count'].mean()) if total_videos > 0 else 0
+        resumen += f"Canal: {channel_title}\nVideos: {total_videos}\nVistas totales: {total_views}\nPromedio de vistas: {avg_views}\nPromedio de likes: {avg_likes}\n---\n"
+
+    prompt = f"""
+Eres un analista de datos de YouTube. A continuación tienes un resumen de datos de varios canales:
+{resumen}
+Redacta un análisis comparativo breve (máximo 150 palabras), resaltando diferencias, similitudes y cualquier dato relevante o curioso. Usa un tono profesional y claro.
+Además necesito que envuelvas los datos extraidos de la API de YouTube (nombres de canal, cifras, etc.) en etiquetas tipo <strong> o <b> para que se destaquen en el análisis final.
+Finalmente añade recomendaciones para los creadores de contenido basadas en los datos analizados y posibles tendencias a seguir.
+"""
+
+    client = OpenAI(api_key=api_key)
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": prompt}]
+    )
+    texto = response.choices[0].message.content.strip()
+    return texto

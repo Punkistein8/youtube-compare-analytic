@@ -1,5 +1,65 @@
 {% extends "layout.html" %}
 {% block content %}
+{% if analysis_text %}
+  <div class="analysis-box my-4">
+    <div class="analysis-header">
+      <span class="analysis-emoji" title="Análisis IA">🤖</span>
+      <span class="analysis-title">Análisis automático</span>
+    </div>
+    <div class="analysis-content">{{ analysis_text|safe }}</div>
+  </div>
+  <style>
+    .analysis-box {
+      background: #fff;
+      border: 3px double #eebbc3;
+      border-radius: 18px;
+      box-shadow: 0 6px 32px 0 rgba(35,41,70,0.13), 0 1.5px 0 #eebbc3;
+      max-width: 900px;
+      margin: 0 auto 2.5rem auto;
+      padding: 1.7rem 2.2rem 1.2rem 2.2rem;
+      transition: transform 0.18s cubic-bezier(.4,2,.6,1), box-shadow 0.18s;
+      font-size: 1.13em;
+      position: relative;
+      text-align: justify;
+    }
+    .analysis-box:hover {
+      transform: scale(1.025);
+      box-shadow: 0 12px 48px 0 rgba(35,41,70,0.18), 0 2.5px 0 #eebbc3;
+    }
+    .analysis-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 0.7rem;
+    }
+    .analysis-emoji {
+      font-size: 2.1em;
+      filter: drop-shadow(0 2px 2px #eebbc3);
+    }
+    .analysis-title {
+      font-weight: 700;
+      color: #232946;
+      font-size: 1.18em;
+      letter-spacing: 0.5px;
+    }
+    .analysis-content strong {
+      color: #232946;
+      font-weight: 700;
+      background: #eebbc3;
+      border-radius: 5px;
+      padding: 0 4px;
+      margin: 0 1.5px;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+    .analysis-content {
+      color: #232946;
+      line-height: 1.7;
+      font-size: 1.08em;
+      word-break: break-word;
+    }
+  </style>
+{% endif %}
 <!-- Container más ancho -->
 <style>
   .canal-border {
@@ -29,7 +89,7 @@
   <h1 class="card-title my-5">Canales de YouTube</h1>
   <div class="row">
     {% for col in range(channel_titles|length) %}
-      <div class="col-md-6 d-flex flex-column align-items-center canal-col {% if not loop.last %}canal-border{% endif %}">
+      <div class="col-md-6 d-flex flex-column align-items-center canal-col {% if not loop.last %}canal-border{% endif %}">  
         <!-- Foto del canal: modo desarrollo y modo producción -->
         {% if channel_thumbnails and channel_thumbnails|length > col and channel_thumbnails[col] %}
           <img src="{{ channel_thumbnails[col] }}" class="rounded-circle mb-3" style="width:120px; height:120px; object-fit:cover; border:3px solid #007bff;">

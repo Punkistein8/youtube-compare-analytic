@@ -1,13 +1,26 @@
 {% extends "layout.html" %}
 {% block content %}
-<p></p>
-<p><h2 class="card-title">Reporte de Comentarios del Video</h2></p>
-<p></p>
-
-  {% for image_name in image_names %}
-  <p></p>
-  <p><img src='{{ image_name }}' alt=""></p>
-  <p></p>
-  {% endfor %}
-
+<style>
+  .comentario-plot {
+    border: 2px solid #007bff;
+    border-radius: 10px;
+    background: #f8f9fa;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    padding: 15px;
+    margin-bottom: 30px;
+  }
+</style>
+<div class="container-fluid text-center w-100" style="max-width: 1200px; margin: auto;">
+  <h2 class="card-title my-5">Reporte de Comentarios del Video</h2>
+  <div class="row">
+    {% for i in range(image_names|length) %}
+      {% if i % 2 == 0 and i > 0 %}</div><div class="row">{% endif %}
+      <div class="col-md-6 d-flex flex-column align-items-center">
+        <div class="comentario-plot w-100">
+          <img src='{{ image_names[i] }}' class="img-fluid img-thumbnail w-100" alt="">
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
 {% endblock content %}

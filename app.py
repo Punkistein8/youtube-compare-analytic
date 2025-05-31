@@ -12,8 +12,8 @@ logger.addHandler(handler)
 logger.setLevel(logging.INFO)
 
 # API_KEY = os.getenv('YOUTUBE_API_KEY')
-# API_KEY = "AIzaSyCR6BEEh5S3OPChro6KjJBsQ30qVETd7GE"
-API_KEY = "AIzaSyBmRKUAfBUn66IA-sQDbXf50hWQvuheCfs"
+API_KEY = "AIzaSyCR6BEEh5S3OPChro6KjJBsQ30qVETd7GE"
+# API_KEY = "AIzaSyBmRKUAfBUn66IA-sQDbXf50hWQvuheCfs"
 
 app = Flask(__name__)
 
@@ -139,7 +139,7 @@ def select_channels():
 
 @app.route('/channels', methods=['GET', 'POST'])
 def channels():
-    '''Esta página retorna el análisis de comparación de canales cuando el usuario selecciona al menos un canal y presiona "Comparar canales ahora"'''
+    '''Esta página retorna el análisis de comparación de canales cuando el usuario selecciona al menos dos canales y presiona "Comparar canales ahora"'''
     result_dictionary = request.args
 
     channel_ids = []
@@ -201,6 +201,19 @@ def channels():
         df_table = viz.top_videos(video_df, metric='view', n=5)
         tables = [df_table.to_html(index=False, classes='table-striped')]
 
+    # --- Análisis textual con ChatGPT ---
+    # Pega tu API KEY de OpenAI aquí:
+    # OPENAI_API_KEY = os.getenv('OPENAI_API_KEY') or "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" #MIA
+    OPENAI_API_KEY = os.getenv('OPENAI_API_KEY') or "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"  #PROJECT
+    analysis_text = None
+    try:
+        import openai
+        if OPENAI_API_KEY and len(channel_titles) > 0:
+            analysis_text = viz.get_channel_analysis_text(video_df, channel_titles, channel_ids, OPENAI_API_KEY)
+    except Exception as e:
+        logger.error(f"Error al generar análisis con ChatGPT: {e}")
+        analysis_text = None
+
     return render_template(
         'channels.html',
         result_dictionary=result_dictionary,
@@ -209,6 +222,7 @@ def channels():
         channel_titles=channel_titles,
         channel_thumbnails=channel_thumbnails,
         tables=tables,
+        analysis_text=analysis_text,
     )
 
 if __name__ == '__main__':
